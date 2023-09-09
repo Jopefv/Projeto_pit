@@ -7,17 +7,10 @@ import { AiOutlineClose, AiOutlineLogout } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import CustomButton from "./CustomButton";
 import { users } from "../utils/data";
-import { useSelector, useDispatch } from "react-redux";
-import { Logout } from "../redux/userSlice";
+import { useSelector } from "react-redux";
 
 function MenuList({ user, onClick }) {
-const dispatch = useDispatch()
-
-  const handleLogout = () => {
-    dispatch(Logout())
-    window.location.replace("/")
-  };
-
+  const handleLogout = () => {};
 
   return (
     <div>

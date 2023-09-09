@@ -25,43 +25,8 @@ const CompnayForm = ({ open, setOpen }) => {
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
   const [uploadCv, setUploadCv] = useState("");
-  const [isLoading, setIsLoading] = useState(flase);
-  const [errMsg, setErrMsg] = useState({status: false, message: ""})
 
-  const onSubmit = async(data) => {
-    setIsLoading(true);
-    setErrMsg(null);
-
-    const uri = profileImage && (await handleFileUpload(profileImage))
-
-    const newData = uri? {...data, profileUrl: uri} : data
-
-    try {
-      const res = await apiRequest({
-        url: "/companies/update-company",
-        token: user?.token,
-        data: newData,
-        method: "PUT",
-      });
-      setIsLoading(false)
-     
-      if (res?.status === "failed") {
-        setErrMsg({...res});
-      } else {
-        setErrMsg({status: "sucess", message: res.message});
-        dispatch(Login(data));
-        localStorage.setItem("userInfo", JSON.stringify(Data)); 
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1500)
-       
-      }
-    } catch (error) {
-      console.error(error);
-      setIsLoading(false)
-    }
-  };
+  const onSubmit = () => {};
 
   const closeModal = () => setOpen(false);
 
