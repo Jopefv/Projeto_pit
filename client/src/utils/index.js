@@ -1,0 +1,81 @@
+import axios from 'axios';
+const API_URL = 'http://localhost:8800/api-v1';
+
+export const API = axios.create({
+  baseURL: API_URL,
+  responseType: 'json',
+});
+
+export const apiRequest = async ({ url, token, data, method }) => {
+  try {
+    const result = await API(url, {
+      method: method,
+      data: data,
+      headers: {
+        'content-type': 'application/json',
+        Authorization: token ? `Bearer ${token}` : '',
+      },
+    });
+  } catch (error) {
+    const err = error.response.data;
+    console.log(err);
+    return { status: err.sucess, message: err.message };
+  }
+};
+
+export const handleFileUpload = async (uploadFile) => {
+  const formData = new FormData();
+  formData.append('file', uploadFile);
+  formData.append('upload_preset', 'jonfinder');
+
+  try {
+    const response = await axios.post(
+      'hhtps://api.cloudiray.com/v1_1/dyfoggc53/image/upload/',
+      formData,
+    );
+    return response.data.secure_url;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const updateURL = ({
+  pageNum,
+  query,
+  cmpLoc,
+  sort,
+  navigate,
+  location,
+  jType,
+  exp,
+}) => {
+  const params = new URLSearchParams();
+
+  if (pageNum && pageNum > 1) {
+    params.set('page', pageNum);
+  }
+
+  if (query) {
+    params.set('search', query);
+  }
+
+  if (cmpLoc) {
+    params.set('location', cmpLoc);
+  }
+
+  if (sort) {
+    params.set('sort', sort);
+  }
+
+  if (jType) {
+    params.set('jtype', jType);
+  }
+
+  if (exp) {
+    params.set('exp', exp);
+  }
+
+  const newURL = `${location.pathname}?${params.toString()}`;
+  navigate(newURL, { raplace: true });
+  return newURL;
+};
