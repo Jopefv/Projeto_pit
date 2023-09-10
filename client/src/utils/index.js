@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_URL = 'http://localhost:8800/api-v1';
+const API_URL = 'http://localhost:8800/api';
 
 export const API = axios.create({
   baseURL: API_URL,
@@ -9,13 +9,15 @@ export const API = axios.create({
 export const apiRequest = async ({ url, token, data, method }) => {
   try {
     const result = await API(url, {
-      method: method,
+      method: method || "GET",
       data: data,
       headers: {
-        'content-type': 'application/json',
-        Authorization: token ? `Bearer ${token}` : '',
-      },
+        "content-type": "application/json",
+        Authorization: token ? `Bearer ${token}` : "",
+      }
     });
+    
+    return result?.data;
   } catch (error) {
     const err = error.response.data;
     console.log(err);
@@ -26,11 +28,11 @@ export const apiRequest = async ({ url, token, data, method }) => {
 export const handleFileUpload = async (uploadFile) => {
   const formData = new FormData();
   formData.append('file', uploadFile);
-  formData.append('upload_preset', 'jonfinder');
+  formData.append('upload_preset', 'jobfinder');
 
   try {
     const response = await axios.post(
-      'hhtps://api.cloudiray.com/v1_1/dyfoggc53/image/upload/',
+      'https://api.cloudinary.com/v1_1/dyfoggc53/image/upload',
       formData,
     );
     return response.data.secure_url;

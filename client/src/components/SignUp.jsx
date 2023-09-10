@@ -32,14 +32,14 @@ const SignUp = ({ open, setOpen }) => {
   const onSubmit = async (data) => { 
     let URL = null
 
-    if(!register){
+    if(isRegister){
       if(accountType === "seaker"){
         URL = "auth/register";
       }else URL = "companies/register";
     }else{
       if(accountType === "seeker"){
         URL = "auth/login"
-      }else{
+      } else{ 
         URL = "companies/login"
       }
     }
@@ -51,6 +51,7 @@ const SignUp = ({ open, setOpen }) => {
         method: "POST",
       })
 
+     
       if (res?.status === "failed"){
         setErrMsg(res?.message)
       } else{
