@@ -20,7 +20,7 @@ const UploadJob = () => {
   });
 
   const [errMsg, setErrMsg] = useState("");
-  const [jobType, setjobType] = useState("Full-Time");
+  const [jobType, setJobType] = useState("Full-Time");
   const [isLoading, setIsLoading] = useState("false");
   const [recentPost, setRecentPost] = useState([]);
 
@@ -95,7 +95,7 @@ const UploadJob = () => {
             <div className='w-full flex gap-4'>
               <div className={`w-1/2 mt-2`}>
                 <label className='text-gray-600 text-sm mb-1'>Job Type</label>
-                <JobTypes jobTitle={jobType} setJobTitle={setjobType} />
+                <JobTypes jobTitle={jobType} setJobTitle={setJobType} />
               </div>
 
               <div className='w-1/2'>

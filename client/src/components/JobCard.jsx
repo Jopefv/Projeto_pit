@@ -13,13 +13,13 @@ const JobCard = ({ job }) => {
 
        <div className='flex gap-3'>
           <img
-            src={job?.company?.profileUrl}
-            alt={job?.company?.name}
+            src={job?.logo}
+            alt={job?.name}
             className='w-14 h-14'
           />
 
-          <div className=''>
-            <p className='text-lg font-semibold truncate'>{job?.jobTitle}</p>
+          <div className='w-full h-16 flex flex-col justufy-center'>
+            <p className='tw-full h-12 flex iteme-center text-lg font-semibold overflow-hidden leading-5'>{job?.jobTitle}</p>
             <span className='flex gap-2 items-center'>
               <GoLocation className='text-slate-900 text-sm' />
               {job?.location}
