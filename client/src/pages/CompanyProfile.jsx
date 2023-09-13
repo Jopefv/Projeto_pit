@@ -290,7 +290,7 @@ const CompanyProfile = () => {
         <p>Jobs Posted</p>
 
         <div className='flex flex-wrap gap-3'>
-          {info?.jobPots?.map((job, index) => {
+          {info?.jobPosts?.map((job, index) => {
             const data = {
               name: info?.name,
               email: info?.email,

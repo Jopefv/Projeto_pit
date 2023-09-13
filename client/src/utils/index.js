@@ -14,14 +14,14 @@ export const apiRequest = async ({ url, token, data, method }) => {
       headers: {
         "content-type": "application/json",
         Authorization: token ? `Bearer ${token}` : "",
-      }
+      },
     });
     
     return result?.data;
   } catch (error) {
     const err = error.response.data;
     console.log(err);
-    return { status: err.sucess, message: err.message };
+    return { status: err.success, message: err.message };
   }
 };
 
@@ -54,30 +54,30 @@ export const updateURL = ({
   const params = new URLSearchParams();
 
   if (pageNum && pageNum > 1) {
-    params.set('page', pageNum);
+    params.set("page", pageNum);
   }
 
   if (query) {
-    params.set('search', query);
+    params.set("search", query);
   }
 
   if (cmpLoc) {
-    params.set('location', cmpLoc);
+    params.set("location", cmpLoc);
   }
 
   if (sort) {
-    params.set('sort', sort);
+    params.set("sort", sort);
   }
 
   if (jType) {
-    params.set('jtype', jType);
+    params.set("jtype", jType);
   }
 
   if (exp) {
-    params.set('exp', exp);
-  }
+    params.set("exp", exp);
+  } 
 
   const newURL = `${location.pathname}?${params.toString()}`;
-  navigate(newURL, { raplace: true });
+  navigate(newURL, { replace: true });
   return newURL;
 };

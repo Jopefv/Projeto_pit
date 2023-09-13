@@ -41,14 +41,14 @@ const FindJobs = () => {
       exp: filterExp,
     })
     try {
-      const res = apiRequest({
+      const res = await apiRequest({
         url: "/jobs" + newURL,
         method: "GET",
       })
       
       setNumPage(res?.numOfPage)
       setRecordCount(res?.totalJobs)
-      setData(res?.data)
+      setData(res.data)
 
       setIsFetching(false)
     } catch (error) {

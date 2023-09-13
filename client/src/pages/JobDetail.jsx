@@ -212,10 +212,10 @@ const JobDetail = () => {
             {similarJobs?.slice(0, 6).map((job, index) => {
               const data = {
                 name: job?.company.name,
-                logo: job?.company.profile,
+                logo: job?.company.profileUrl,
                 ...job
               }
-              return <JobCard job={job} key={index} />
+              return <JobCard job={data} key={index} />
             })}
           </div>
         </div>

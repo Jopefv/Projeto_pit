@@ -35,10 +35,10 @@ const UserForm = ({ open, setOpen }) => {
       const newData = uri ? {...data, profileUrl: uri} : data
 
       const res = await apiRequest({
-        url: "/user/update-user",
+        url: "/users/update-user",
         token: user?.token,
         data: newData,
-        method: "PUT"
+        method: "PUT",
       })
 
       if (res) {
@@ -49,7 +49,6 @@ const UserForm = ({ open, setOpen }) => {
       }
       setIsSubmitting(false)
     } catch (error) {
-      
       setIsSubmitting(false)
       console.log(error)
     }
