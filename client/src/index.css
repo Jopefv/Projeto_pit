@@ -3,6 +3,11 @@
   font-family: Inter, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  --text-color-light: #333; /* Cor do texto no modo claro */
+  --background-color-light: #fff; /* Cor de fundo no modo claro */
+
+  --text-color-dark: #ccc; /* Cor do texto no modo escuro */
+  --background-color-dark: #111; /* Cor de fundo no modo escuro */
 }
 
 a {
@@ -19,7 +24,15 @@ color: #1676CC;
 
 body {
   box-sizing: border-box;
+  color: var(--text-color-light);
+  background-color: var(--background-color-light);
 }
+
+body.dark {
+  color: var(--text-color-dark);
+  background-color: var(--background-color-dark);
+}
+
 
 .slider {
   position: relative;

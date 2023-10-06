@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { BiChevronDown } from 'react-icons/bi';
 import { CgProfile } from 'react-icons/cg';
@@ -16,14 +16,13 @@ function MenuList({ user, onClick }) {
     dispatch(Logout());
     window.location.replace('/');
   };
-
   return (
     <div>
       <Menu as="div" className="inline-block text-left">
-        <div className="flex">
-          <Menu.Button className="inline-flex gap-2 w-full rounded-md bg-white md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-opacity-20 ">
-            <div className="leading[80px] flex flex-col items-start">
-              <p className="text-sm font-semibold ">
+        <div className="flex mr-20">
+          <Menu.Button className="inline-flex gap-2 w-full max-w-xs rounded-md bg-white md:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-opacity-20">
+            <div className="leading-10 flex flex-col items-start">
+              <p className="text-sm font-semibold">
                 {user?.firstName ?? user?.name}
               </p>
               <span className="text-sm text-blue-600 ">
@@ -34,7 +33,7 @@ function MenuList({ user, onClick }) {
             <img
               src={user?.profileUrl}
               alt="user profile"
-              className="w-10 h-10 rounded-full object-cover "
+              className="w-10 h-10 rounded-full object-cover"
             />
             <BiChevronDown
               className="h-8 w-8 text-slate-600"
@@ -101,17 +100,69 @@ function MenuList({ user, onClick }) {
     </div>
   );
 }
+
 const Navbar = () => {
   const { user } = useSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
+  const [theme, setTheme] = useState(
+    localStorage.getItem('theme') ? localStorage.getItem('theme') : 'system',
+  );
+  const element = document.documentElement;
+  const darkQuery = window.matchMedia('(prefers-color-schema: dark)');
 
-  const handleCloseNavbar = () => {
-    setIsOpen((prev) => !prev);
+  useEffect(() => {
+    function onWindowMatch() {
+      if (
+        localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && darkQuery.matches)
+      ) {
+        element.classList.add('dark');
+      } else {
+        element.classList.remove('dark');
+      }
+    }
+
+    onWindowMatch();
+
+    darkQuery.addEventListener('change', (e) => {
+      if (!('theme' in localStorage)) {
+        if (e.matches) {
+          element.classList.add('dark');
+        } else {
+          element.classList.remove('dark');
+        }
+      }
+    });
+  }, []);
+
+  const options = [
+    {
+      icon: 'sunny-outline',
+      text: 'light',
+    },
+    {
+      icon: 'moon-outline',
+      text: 'dark',
+    },
+    {
+      icon: 'desktop-outline',
+      text: 'system',
+    },
+  ];
+
+  const handleThemeChange = (newTheme) => {
+    setTheme(newTheme);
+    localStorage.setItem('theme', newTheme);
+    if (newTheme === 'dark') {
+      element.classList.add('dark');
+    } else {
+      element.classList.remove('dark');
+    }
   };
 
   return (
     <>
-      <div className="relative bg-[#f7fdfd] z-50">
+      <div className="relative bg-[#f7fdfd] z-50 dark:text-gray-100 dark:bg-slate-900 duration-100">
         <nav className="container mx-auto flex items-center justify-between p-5">
           <div>
             <Link to="/" className="text-blue-600 font-bold text-xl">
@@ -119,7 +170,7 @@ const Navbar = () => {
             </Link>
           </div>
 
-          <ul className="hidden lg:flex gap-10 text-base">
+          <ul className="hidden lg:flex gap-10 text-base ml-60">
             <li>
               <Link to="/">Find Job</Link>
             </li>
@@ -140,9 +191,30 @@ const Navbar = () => {
             <li>
               <Link to="/about-us">About</Link>
             </li>
+            <li>
+              <div className="fixed top-8 right-10 duration-100 dark:bg-slate-700 bg-gray-100 rounded flex space-x-2">
+                {options?.map((opt) => (
+                  <button
+                    key={opt.text}
+                    onClick={() => handleThemeChange(opt.text)}
+                    className={`w-8 h-8 leading-9 text-x1 rounded-full ${
+                      theme === opt.text && 'text-sky-600'
+                    } ${
+                      theme === 'light' && opt.text === 'dark'
+                        ? 'text-gray-900 bg-white border border-gray-200'
+                        : theme === 'dark' && opt.text === 'light'
+                        ? 'text-white bg-gray-700 border border-gray-900'
+                        : ''
+                    }`}
+                  >
+                    <ion-icon name={opt.icon}></ion-icon>
+                  </button>
+                ))}
+              </div>
+            </li>
           </ul>
 
-          <div className="hidden lg:block">
+          <div className="hidden lg:inline-block ml-auto ml-30">
             {!user?.token ? (
               <Link to="/user-auth">
                 <CustomButton
@@ -158,36 +230,60 @@ const Navbar = () => {
           </div>
 
           <button
-            className="block lg:hidden text-slate-900"
+            className="block lg:hidden text-slate-900 rounded"
             onClick={() => setIsOpen((prev) => !prev)}
           >
-            {isOpen ? <AiOutlineClose size={26} /> : <HiMenuAlt3 size={26} />}
+            {isOpen ? (
+              <AiOutlineClose size={26} className="text-gray-100" />
+            ) : (
+              <HiMenuAlt3 size={26} />
+            )}
           </button>
         </nav>
 
         {/* MOBILE MENU */}
         <div
           className={`${
-            isOpen ? 'absolute flex bg-[#f7fdfd] ' : 'hidden'
-          } container mx-auto lg:hidden flex-col pl-8 gap-3 py-5`}
+            isOpen ? 'absolute flex bg-[#111] text-gray-100 rounded ' : 'hidden'
+          } container mx-auto lg:hidden flex-col pl-8 gap-3 py-5 `}
         >
-          <Link to="/" onClick={handleCloseNavbar}>
+          <Link to="/" onClick={() => setIsOpen(false)}>
             Find Job
           </Link>
-          <Link to="/companies" onClick={handleCloseNavbar}>
+          <Link to="/companies" onClick={() => setIsOpen(false)}>
             Companies
           </Link>
           <Link
-            onClick={handleCloseNavbar}
+            onClick={() => setIsOpen(false)}
             to={
               user?.accountType === 'seeker' ? 'applly-gistory' : 'upload-job'
             }
           >
             {user?.accountType === 'seeker' ? 'Applications' : 'Upload Job'}
           </Link>
-          <Link to="/about-us" onClick={handleCloseNavbar}>
+          <Link to="/about-us" onClick={() => setIsOpen(false)}>
             About
           </Link>
+
+          <div className="w-30 h-10 duration-100 dark:bg-slate-700 bg-gray-100 rounded">
+            {options?.map((opt) => (
+              <button
+                key={opt.text}
+                onClick={() => handleThemeChange(opt.text)}
+                className={`w-8 h-8 leading-9 text-x1 rounded-full m-1 ${
+                  theme === opt.text && 'text-sky-600'
+                } ${
+                  theme === 'light' && opt.text === 'dark'
+                    ? 'text-gray-900 bg-white border border-gray-200'
+                    : theme === 'dark' && opt.text === 'light'
+                    ? 'text-white bg-gray-700 border border-gray-900'
+                    : ''
+                }`}
+              >
+                <ion-icon name={opt.icon}></ion-icon>
+              </button>
+            ))}
+          </div>
 
           <div className="w-full py-10">
             {!user?.token ? (
@@ -199,7 +295,7 @@ const Navbar = () => {
               </a>
             ) : (
               <div>
-                <MenuList user={user} onClick={handleCloseNavbar} />
+                <MenuList user={user} onClick={() => setIsOpen(false)} />
               </div>
             )}
           </div>
