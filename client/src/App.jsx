@@ -50,9 +50,7 @@ function App() {
                   ? '/user-profile'
                   : '/user-profile/:id'
               }
-              element={<UserProfile />}
-              
-            />
+              element={<UserProfile />}/>
 
             <Route path={'/company-profile'} element={<CompanyProfile />} />
             <Route path={'/company-profile/:id'} element={<CompanyProfile />} />

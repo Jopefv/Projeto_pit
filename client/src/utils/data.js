@@ -280,12 +280,12 @@ export const footerLinks = [
   {
     id: "01",
     title: "Company",
-    links: ["Home", "About Us", "Services", "Our Team"],
+    links: ["Home", "Sobre Nos", "Duvidas", "Nosso Time"],
   },
   {
     id: "02",
     title: "Policy",
-    links: ["Policies", "Contact", "FAQ"],
+    links: ["Policies", "Contato", "FAQ"],
   },
   {
     id: "03",
