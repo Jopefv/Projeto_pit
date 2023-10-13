@@ -11,8 +11,11 @@ import {
   UploadJob,
   UserProfile,
 } from './pages';
+
+
 import { useSelector } from 'react-redux';
 import { ThemeProvider } from './ThemeContext';
+import AppliedJobs from './pages/AppliedJobs';
 
 function Layout() {
   const { user } = useSelector((state) => state.user);
@@ -40,6 +43,7 @@ function App() {
             />
             <Route path="/find-jobs" element={<FindJobs />} />
             <Route path="/companies" element={<Companies />} />
+            <Route path="/apply-jobs" element={<AppliedJobs />} />
             <Route
               path={
                 user?.accountType === 'seeker'
@@ -47,12 +51,14 @@ function App() {
                   : '/user-profile/:id'
               }
               element={<UserProfile />}
+              
             />
 
             <Route path={'/company-profile'} element={<CompanyProfile />} />
             <Route path={'/company-profile/:id'} element={<CompanyProfile />} />
             <Route path={'/upload-job'} element={<UploadJob />} />
             <Route path={'/job-detail/:id'} element={<JobDetail />} />
+            
           </Route>
 
           <Route path="/about-us" element={<About />} />

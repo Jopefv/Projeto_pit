@@ -6,16 +6,19 @@ import { HiMenuAlt3 } from 'react-icons/hi';
 import { AiOutlineClose, AiOutlineLogout } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import CustomButton from './CustomButton';
-import { users } from '../utils/data';
 import { useSelector, useDispatch } from 'react-redux';
 import { Logout } from '../redux/userSlice';
+import { useTheme } from '../ThemeContext'; // Importe useTheme
+import { FiSun, FiMoon } from 'react-icons/fi'; // Importe ícones de sol e lua
 
 function MenuList({ user, onClick }) {
   const dispatch = useDispatch();
+
   const handleLogout = () => {
     dispatch(Logout());
     window.location.replace('/');
   };
+
   return (
     <div>
       <Menu as="div" className="inline-block text-left">
@@ -104,62 +107,10 @@ function MenuList({ user, onClick }) {
 const Navbar = () => {
   const { user } = useSelector((state) => state.user);
   const [isOpen, setIsOpen] = useState(false);
-  const [theme, setTheme] = useState(
-    localStorage.getItem('theme') ? localStorage.getItem('theme') : 'system',
-  );
+  const { theme, toggleTheme } = useTheme();
   const element = document.documentElement;
-  const darkQuery = window.matchMedia('(prefers-color-schema: dark)');
 
-  useEffect(() => {
-    function onWindowMatch() {
-      if (
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) && darkQuery.matches)
-      ) {
-        element.classList.add('dark');
-      } else {
-        element.classList.remove('dark');
-      }
-    }
-
-    onWindowMatch();
-
-    darkQuery.addEventListener('change', (e) => {
-      if (!('theme' in localStorage)) {
-        if (e.matches) {
-          element.classList.add('dark');
-        } else {
-          element.classList.remove('dark');
-        }
-      }
-    });
-  }, []);
-
-  const options = [
-    {
-      icon: 'sunny-outline',
-      text: 'light',
-    },
-    {
-      icon: 'moon-outline',
-      text: 'dark',
-    },
-    {
-      icon: 'desktop-outline',
-      text: 'system',
-    },
-  ];
-
-  const handleThemeChange = (newTheme) => {
-    setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    if (newTheme === 'dark') {
-      element.classList.add('dark');
-    } else {
-      element.classList.remove('dark');
-    }
-  };
-
+  
   return (
     <>
       <div className="relative bg-[#f7fdfd] z-50 dark:text-gray-100 dark:bg-slate-900 duration-100">
@@ -181,7 +132,7 @@ const Navbar = () => {
               <Link
                 to={
                   user?.accountType === 'seeker'
-                    ? '/applications'
+                    ? '/apply-jobs'
                     : '/upload-job'
                 }
               >
@@ -193,23 +144,9 @@ const Navbar = () => {
             </li>
             <li>
               <div className="fixed top-8 right-10 duration-100 dark:bg-slate-700 bg-gray-100 rounded flex space-x-2">
-                {options?.map((opt) => (
-                  <button
-                    key={opt.text}
-                    onClick={() => handleThemeChange(opt.text)}
-                    className={`w-8 h-8 leading-9 text-x1 rounded-full ${
-                      theme === opt.text && 'text-sky-600'
-                    } ${
-                      theme === 'light' && opt.text === 'dark'
-                        ? 'text-gray-900 bg-white border border-gray-200'
-                        : theme === 'dark' && opt.text === 'light'
-                        ? 'text-white bg-gray-700 border border-gray-900'
-                        : ''
-                    }`}
-                  >
-                    <ion-icon name={opt.icon}></ion-icon>
-                  </button>
-                ))}
+                    <button onClick={toggleTheme}>
+                        {theme === 'light' ? <FiMoon /> : <FiSun />}
+                    </button>
               </div>
             </li>
           </ul>
@@ -266,23 +203,9 @@ const Navbar = () => {
           </Link>
 
           <div className="w-30 h-10 duration-100 dark:bg-slate-700 bg-gray-100 rounded">
-            {options?.map((opt) => (
-              <button
-                key={opt.text}
-                onClick={() => handleThemeChange(opt.text)}
-                className={`w-8 h-8 leading-9 text-x1 rounded-full m-1 ${
-                  theme === opt.text && 'text-sky-600'
-                } ${
-                  theme === 'light' && opt.text === 'dark'
-                    ? 'text-gray-900 bg-white border border-gray-200'
-                    : theme === 'dark' && opt.text === 'light'
-                    ? 'text-white bg-gray-700 border border-gray-900'
-                    : ''
-                }`}
-              >
-                <ion-icon name={opt.icon}></ion-icon>
-              </button>
-            ))}
+                    <button onClick={toggleTheme}>
+                        {theme === 'light' ? <FiMoon /> : <FiSun />}
+                    </button>
           </div>
 
           <div className="w-full py-10">

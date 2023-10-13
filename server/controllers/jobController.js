@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Jobs from "../models/jobsModel.js";
 import Companies from "../models/companiesModel.js";
+import Users from "../models/userModel.js";
 
 export const createJob = async (req, res, next) => {
   try {
@@ -259,3 +260,102 @@ export const deleteJobPost = async (req, res, next) => {
     res.status(404).json({ message: error.message });
   }
 };
+
+export const applyJobPost = async (req, res, next) => {
+  try {
+    const { jobId, userId } = req.params;
+
+    // Verifique se o trabalho existe
+    const job = await Jobs.findById(jobId);
+    if (!job) {
+      return res.status(404).json({ message: "Trabalho não encontrado." });
+    }
+
+    // Verifique se o usuário existe
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    // Verifique se o usuário já se candidatou a este trabalho
+    if (job.application.includes(userId)) {
+      return res.status(400).json({ message: "Você já se candidatou a este trabalho." });
+    }
+
+    // Aplicar o usuário ao trabalho
+    job.application.push(userId);
+    await job.save();
+
+    return res.status(200).json({ success: true, message: "Candidatura bem-sucedida." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro ao aplicar para o trabalho." });
+  }
+};
+
+
+
+export const getAppliedJobs = async (req, res, next) => {
+  try {
+    const { userId } = req.params;
+
+    // Busque os trabalhos aplicados pelo usuário
+    const appliedJobs = await Jobs.find({ application: userId }).populate({
+      path: "company",
+      select: "-password",
+    });
+
+    // Verifique se o usuário está inscrito em algum trabalho
+    if (appliedJobs.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: "O usuário não está inscrito em nenhum trabalho.",
+        data: appliedJobs,
+      });
+    }
+
+    // Se o usuário estiver inscrito em pelo menos um trabalho, você pode acessar o primeiro trabalho da lista (ou qualquer outro trabalho, se necessário)
+    const firstAppliedJob = appliedJobs[0];
+
+    res.status(200).json({
+      success: true,
+      message: "Trabalhos aplicados pelo usuário encontrados com sucesso.",
+      data: appliedJobs,
+      firstAppliedJob: firstAppliedJob,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Erro ao buscar trabalhos aplicados." });
+  }
+};
+
+
+export const cancelApplication = async (req, res, next) => {
+  try {
+    const { jobId, userId } = req.params;
+
+    // Encontre o trabalho pelo ID
+    const job = await Jobs.findById(jobId);
+
+    // Verifique se o trabalho existe
+    if (!job) {
+      return res.status(404).json({ message: "Trabalho não encontrado." });
+    }
+
+    // Verifique se o usuário está inscrito neste trabalho
+    if (!job.application.includes(userId)) {
+      return res.status(400).json({ message: "Você não está inscrito neste trabalho." });
+    }
+
+    // Remova o usuário da lista de aplicativos usando $pull
+    await Jobs.findByIdAndUpdate(jobId, { $pull: { application: userId } });
+
+    return res.status(200).json({ success: true, message: "Inscrição cancelada com sucesso." });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erro ao cancelar a inscrição no trabalho." });
+  }
+};
+
+
+
