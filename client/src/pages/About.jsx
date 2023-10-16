@@ -1,7 +1,7 @@
 import React from "react";
 import { JobImg } from "../assets";
 import Accordion from "../components/Accordion";
-import Help from "../components/Help.jsx";
+import Help from "../components/Help";
 
 const accordionData = [
   {

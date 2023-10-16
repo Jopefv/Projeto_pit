@@ -106,7 +106,6 @@ const JobDetail = () => {
       if (window.confirm('Deseja cancelar sua candidatura a este post?')) {
         const res = await apiRequest({
           url: `/jobs/cancel-application/${job?._id}/${user?._id}`,
- 
           token: user?.token,
           method: 'DELETE',
         });

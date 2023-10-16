@@ -30,15 +30,22 @@ const AppliedJobs = () => {
 
     try {
       const res = await apiRequest({
-        url: `/jobs/applied-jobs/${userId}`,
-       token: user?.token,
+        url: `/jobs//applied-jobs/${userId}`,
+        token: user?.token,
         method: "GET",
       });
-
+  
       setNumPage(res?.data?.length > 0 ? Math.ceil(res.data.length / 5) : 1);
       setRecordsCount(res?.data?.length || 0);
-      setAppliedJobs(res.data);
-
+  
+      // Verifique o localStorage para determinar se o usuário já se inscreveu em um trabalho
+      const appliedJobsWithLocalStorage = res.data.map((job) => {
+        const isApplied = localStorage.getItem(`applied_${job._id}`) === 'true';
+        return { ...job, isApplied };
+      });
+  
+      setAppliedJobs(appliedJobsWithLocalStorage);
+  
       setIsFetching(false);
     } catch (e) {
       console.log(e);
