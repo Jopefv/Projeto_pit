@@ -21,7 +21,7 @@ function Help() {
     };
 
     emailjs
-      .send("service_rnl5db4", "template_a3rzo5v", templateParams, "UOhtQUrHErbS3AZJV")
+      .send("6QtQXa6up0cNP7p0r", "template_eqnecq7", templateParams, "service_6oqsv7n")
       .then(
         (response) => {
           console.log("EMAIL ENVIADO", response.status, response.text);
